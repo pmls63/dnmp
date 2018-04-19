@@ -54,10 +54,6 @@ RUN set -xe \
 ENV PHPIZE_DEPS autoconf file g++ gcc libc-dev make pkgconf re2c php7-dev php7-pear \
     yaml-dev libevent-dev openssl-dev
 
-# ENV PHP_INI_DIR /etc/php7
-
-# RUN ln -s /usr/bin/php7 /usr/bin/php
-
 RUN set -xe \
     && apk add --no-cache --repository "http://dl-cdn.alpinelinux.org/alpine/edge/testing" \
     --virtual .phpize-deps \
@@ -65,10 +61,10 @@ RUN set -xe \
     && sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) \
     && pecl channel-update pecl.php.net \
     && pecl install yaml \
-    && echo "extension=yaml.so" > $PHP_INI_DIR/conf.d/01_yaml.ini
+    && echo "extension=yaml.so" > $PHP_INI_DIR/conf.d/01_yaml.ini\
 # RUN pecl install event
 # RUN echo "extension=event.so" > $PHP_INI_DIR/conf.d/01_event.ini
-RUN rm -rf /usr/share/php7 \
+    rm -rf /usr/share/php7 \
     && rm -rf /tmp/* \
     && apk del .phpize-deps
 

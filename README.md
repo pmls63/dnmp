@@ -9,13 +9,14 @@ dnmp
 通过docker-compose搭建的dnmp环境;
 
 ### Author
+```
                      __     __________
     ____  ____ ___  / /____/ ___/__  /
    / __ \/ __ `__ \/ / ___/ __ \ /_ <
   / /_/ / / / / / / (__  ) /_/ /__/ /
  / .___/_/ /_/ /_/_/____/\____/____/
 /_/
-
+```
 
 ### Services
 - nginx:alpine;
@@ -37,20 +38,21 @@ dnmp
   ```
 4. Go to your browser and type `http://localhost`
 
-### Construct
-dnmp/
-├── Docker-compose.yml
-├── LICENSE
-├── README.md
-├── build
+### Table of Content
+```
+project                                                     根目录
+├── Docker-compose.yml                                      docker-compose 文件
+├── LICENSE                                                 license
+├── README.md                                               readme
+├── build                                                   镜像构建目录 自定义镜像
 │   └── php
 │       └── php72
-│           └── Dockerfile
-├── conf
+│           └── Dockerfile                                  Dockerfile 用于构建自定义镜像
+├── conf                                                    配置文件目录
 │   ├── mongodb
-│   │   └── mongodb.conf
+│   │   └── mongodb.conf                                    mongodb 配置文件
 │   ├── mysql
-│   │   └── my.cnf
+│   │   └── my.cnf                                          mysql 配置文件
 │   ├── nginx
 │   │   ├── conf.d
 │   │   │   ├── certs
@@ -62,26 +64,26 @@ dnmp/
 │   │   │   │       └── www.ssl_test.wls.origin.key
 │   │   │   ├── ssl_test.conf
 │   │   │   └── test.conf
-│   │   └── nginx.conf
+│   │   └── nginx.conf                                      nginx 配置文件
 │   ├── php
 │   │   ├── php-fpm.d
 │   │   │   └── www.conf
-│   │   └── php.ini
+│   │   └── php.ini                                         php 配置文件
 │   └── redis
-│       └── redis.conf
-├── db
+│       └── redis.conf                                      redis 配置文件
+├── db                                                      数据库文件夹
 │   ├── mongodb
 │   ├── mysql
 │   └── redis
-├── log
+├── log                                                     日志文件夹
 │   ├── mongodb
 │   ├── mysql
 │   ├── nginx
 │   ├── php-fpm
 │   └── redis
-└── www
+└── www                                                     web项目文件夹
     ├── ssl_test
     │   └── index.php
     └── test
         └── index.php
-
+```
