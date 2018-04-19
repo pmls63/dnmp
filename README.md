@@ -4,6 +4,7 @@ dnmp
 [![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://registry.hub.docker.com/u/techdivision/dnmp-alpine/)
 [![Docker Automated build](https://img.shields.io/docker/automated/techdivision/dnmp-alpine.svg)]()
 [![php-fpm 7.2.4](https://img.shields.io/travis/php-v/symfony/symfony.svg)](http://php.net/)
+[![MIT](https://img.shields.io/apm/l/vim-mode.svg)]
 
 通过docker-compose搭建的dnmp环境;
 
