@@ -1,0 +1,94 @@
+# @author pmls63 1083239138@qq.com
+version: "2.0"                                  # 指定版本号
+services:                                       # 服务
+# /etc/nginx/nginx.conf
+# /etc/nginx/conf.d/
+    nginx:                                      # 声明本服务的名称
+        image: nginx:1.12.2-alpine-perl         # 指定服务的镜像名称或镜像ID
+        ports:                                  # [HOST:CONTAINER]
+            - "80:80"                           # 绑定容器的80端口（R右边的80表示容器的端口号）到主机的80端口[HOST:CONTAINER]
+            - "443:443"
+        restart: always
+        volumes:                                # 挂载一个目录或一个已存在的数据卷容器 [HOST:CONTAINER:ro/rw]
+            - ./www/:/var/www/html/:rw
+            - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./conf/nginx/conf.d:/etc/nginx/conf.d/:ro
+            - ./log/nginx/:/var/log/nginx/:rw
+        links:                                  # 连接其他服务中的容器
+            - php72:fpm
+        networks:                               # 指定网络
+            - w-network
+
+# /var/www/html/
+# /usr/local/etc/php/php.ini
+# /usr/local/etc/php/conf.d
+    php72:
+        build:                                  # 使用Dockerfile构建镜像
+            context: ./build/php/php72/         # 指定Dockerfile所在文件夹的路径
+        image: php72:alpine                     # 当有build及image时，Compose会构建镜像并命名为images后面的名字 webapp:tag
+        expose:
+            - "9000"                            # 将当前容器（php72）的9000端口暴露给link到本容器(php72)的容器
+        restart: always
+        volumes:
+            - ./www/:/var/www/html/:rw
+            - ./conf/php/php.ini:/usr/local/etc/php/php.ini:ro
+            - ./conf/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+            - ./log/php-fpm/:/var/log/php-fpm/:rw
+        links:
+            - mysql:mysql
+            - redis:redis
+            - mongodb:mongodb
+        networks:
+            - w-network
+
+# MYSQL_ROOT_PASSWORD
+# MYSQL_DATABASE
+# MYSQL_USER MYSQL_PASSWORD
+# MYSQL_ALLOW_EMPTY_PASSWORD
+# MYSQL_RANDOM_ROOT_PASSWORD
+# /etc/mysql/my.cnf
+# /etc/mysql/conf.d/
+# /var/lib/mysql
+    mysql:
+        image: mariadb:latest
+        ports:
+            - "3306:3306"
+        restart: always
+        volumes:
+            - ./conf/mysql/my.cnf:/etc/mysql/my.conf:ro
+            - ./conf/mysql/conf.d/:/etc/mysql/conf.d/:ro
+            - ./db/mysql/:/var/lib/mysql/:rw
+            - ./log/mysql/:/var/log/mysql/:rw
+        environment:                            # 设置镜像变量
+            MYSQL_ROOT_PASSWORD: root
+        networks:
+            - w-network
+
+# /usr/local/etc/redis/redis.conf
+    redis:
+        image: redis:4.0.9-alpine
+        ports:
+            - "6379:6379"
+        restart: always
+        volumes:
+            - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+            - ./db/redis/data/:/data/:rw
+        networks:
+            - w-network
+
+# /data/db/
+    mongodb:
+        image: mongo:latest
+        ports:
+            - "27017:27017"
+        restart: always
+        volumes:
+            - ./conf/mongodb/mongodb.conf:/etc/mongodb/mongodb.conf:ro
+            - ./db/mongodb/data/:/data/db/:rw
+            - ./log/mongodb/:/var/log/mongodb/:rw
+        networks:
+            - w-network
+
+networks:
+    w-network:
+        driver: bridge                          # 指定网络模式 host/container/none/bridge
