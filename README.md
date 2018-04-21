@@ -40,19 +40,38 @@ dnmp
 
 ### Table of Content
 ```
-project                                                     根目录
-├── Docker-compose.yml                                      docker-compose 文件
-├── LICENSE                                                 license
-├── README.md                                               readme
-├── build                                                   镜像构建目录 自定义镜像
-│   └── php
-│       └── php72
-│           └── Dockerfile                                  Dockerfile 用于构建自定义镜像
-├── conf                                                    配置文件目录
+project                                                         根目录
+├── Docker-compose.yml                                          docker-compose 文件
+├── LICENSE                                                     license 文件
+├── README.md                                                   readme 文件
+├── build                                                       镜像构建目录 自定义镜像
+│   ├── nginx
+│   │   ├── Dockerfile                                          Dockerfile 用于构建自定义镜像
+│   │   └── rootfs
+│   │       └── etc
+│   │           └── nginx
+│   │               ├── conf.d
+│   │               │   └── default.conf
+│   │               └── nginx.conf
+│   ├── php
+│   │   └── php72
+│   │       ├── Dockerfile
+│   │       └── rootfs
+│   │           └── etc
+│   │               └── php7
+│   │                   ├── conf.d
+│   │                   │   ├── 00_opcache.ini
+│   │                   │   └── 50-setting.ini
+│   │                   └── php-fpm.conf
+│   └── redis
+│       ├── Dockerfile
+│       └── docker-entrypoint.sh
+├── conf                                                        配置文件目录
 │   ├── mongodb
-│   │   └── mongodb.conf                                    mongodb 配置文件
+│   │   └── mongodb.conf                                        mongodb 配置文件
 │   ├── mysql
-│   │   └── my.cnf                                          mysql 配置文件
+│   │   ├── conf.d
+│   │   └── my.cnf                                              mysql 配置文件
 │   ├── nginx
 │   │   ├── conf.d
 │   │   │   ├── certs
@@ -64,24 +83,24 @@ project                                                     根目录
 │   │   │   │       └── www.ssl_test.wls.origin.key
 │   │   │   ├── ssl_test.conf
 │   │   │   └── test.conf
-│   │   └── nginx.conf                                      nginx 配置文件
+│   │   └── nginx.conf                                          nginx 配置文件
 │   ├── php
 │   │   ├── php-fpm.d
 │   │   │   └── www.conf
-│   │   └── php.ini                                         php 配置文件
+│   │   └── php.ini                                             php 配置文件
 │   └── redis
-│       └── redis.conf                                      redis 配置文件
-├── db                                                      数据库文件夹
+│       └── redis.conf                                          redis 配置文件
+├── db                                                          数据库文件夹
 │   ├── mongodb
 │   ├── mysql
 │   └── redis
-├── log                                                     日志文件夹
+├── log                                                         日志文件夹
 │   ├── mongodb
 │   ├── mysql
 │   ├── nginx
 │   ├── php-fpm
 │   └── redis
-└── www                                                     web项目文件夹
+└── www                                                         web项目文件夹
     ├── ssl_test
     │   └── index.php
     └── test
