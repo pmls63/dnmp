@@ -1,82 +1,55 @@
-FROM php:7.2.4-fpm-alpine3.7
+FROM alpine:3.7
 
-MAINTAINER pmls63 1083239138@qq.com
+MAINTAINER pmls63 <1083239138@qq.com>
 
-# setup remote php packagages
 ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
-RUN set -xe \
-    && echo "https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
-    && echo "@php https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
-    && apk add --update --no-cache \
-    ca-certificates \
-    curl \
-    openssh-client \
-    libmemcached-libs \
-    libevent \
-    libssl1.0 \
-    musl \
-    yaml \
-    php7 \
-    php7-apcu@php \
-    php7-bcmath \
-    php7-ctype \
-    php7-curl \
-    php7-dom \
-    php7-iconv \
-    php7-intl \
-    php7-json \
-    php7-openssl \
-    php7-opcache \
-    php7-mbstring \
-    php7-memcached \
-    php7-mysqlnd \
-    php7-mysqli \
-    php7-pcntl \
-    php7-pgsql \
-    php7-pdo_mysql \
-    php7-pdo_pgsql \
-    php7-pdo_sqlite \
-    php7-phar \
-    php7-posix \
-    php7-session \
-    php7-soap \
-    php7-sockets \
-    php7-sodium \
-    php7-xml \
-    php7-xmlreader \
-    php7-zip \
-    php7-zlib \
-    && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted \
-    gnu-libiconv
+RUN apk --update add ca-certificates \
+    && echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    && echo "@edge-community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && echo "@cast https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories \
+    && apk add -U \
+    tini \
+    php7@cast \
+    php7-dev@cast \
+    php7-common@cast \
+    php7-apcu@cast \
+    php7-bcmath@cast \
+    php7-ctype@cast \
+    php7-curl@cast \
+    php7-exif@cast \
+    php7-iconv@cast \
+    php7-intl@cast \
+    php7-json@cast \
+    php7-mbstring@cast \
+    php7-opcache@cast \
+    php7-openssl@cast \
+    php7-pcntl@cast \
+    php7-pdo@cast \
+    php7-mysqlnd@cast \
+    php7-pdo_mysql@cast \
+    php7-pdo_pgsql@cast \
+    php7-phar@cast \
+    php7-posix@cast \
+    php7-session@cast \
+    php7-xml@cast \
+    php7-xsl@cast \
+    php7-zip@cast \
+    php7-zlib@cast \
+    php7-dom@cast \
+    php7-redis@cast \
+    php7-fpm@cast \
+    php7-sodium@cast \
 
-# install and remove building packages
-ENV PHPIZE_DEPS autoconf file g++ gcc libc-dev make pkgconf re2c php7-dev php7-pear \
-    yaml-dev libevent-dev openssl-dev
+    && ln -s /usr/bin/php7 /usr/bin/php \
+    && rm -rf /var/cache/apk/*
 
-RUN set -xe \
-    && apk add --no-cache --repository "http://dl-cdn.alpinelinux.org/alpine/edge/testing" \
-    --virtual .phpize-deps \
-    $PHPIZE_DEPS \
-    && sed -i 's/^exec $PHP -C -n/exec $PHP -C/g' $(which pecl) \
-    && pecl channel-update pecl.php.net \
-    && pecl install yaml \
-    && echo "extension=yaml.so" > $PHP_INI_DIR/conf.d/01_yaml.ini\
-# RUN pecl install event
-# RUN echo "extension=event.so" > $PHP_INI_DIR/conf.d/01_event.ini
-    rm -rf /usr/share/php7 \
-    && rm -rf /tmp/* \
-    && apk del .phpize-deps
+ADD rootfs /
 
-# COPY 00_memlimit.ini $PHP_INI_DIR/conf.d/00_memlimit.ini
+ENTRYPOINT ["/sbin/tini", "--"]
 
-WORKDIR /srv
+CMD ["/usr/sbin/php-fpm7", "-R", "--nodaemonize"]
 
-ARG BUILD_DATE
-ARG VCS_REF
+EXPOSE 9000
 
-LABEL org.label-schema.vcs-ref=$VCS_REF \
-    org.label-schema.build-date=$BUILD_DATE
-
-# Fix for iconv: https://github.com/docker-library/php/issues/240
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+WORKDIR /app
