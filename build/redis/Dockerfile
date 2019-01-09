@@ -1,5 +1,5 @@
 FROM alpine:3.7
-
+# https://github.com/docker-library/redis
 MAINTAINER pmls63 <1083239138@qq.com>
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
@@ -64,6 +64,3 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 6379
 CMD ["redis-server"]
-
-WORKDIR /home
-

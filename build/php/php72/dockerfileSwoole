@@ -1,0 +1,82 @@
+FROM alpine:3.7
+
+MAINTAINER pmls63 <1083239138@qq.com>
+
+## swoole版本，如需安装swoole则取消注释
+ENV PHP_EXT_SWOOLE=swoole-2.2.0
+ENV PHP_REDIS=4.0.2
+
+ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+
+RUN apk --update add ca-certificates \
+    && echo "@edge-main http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    && echo "@edge-community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && echo "@cast https://php.codecasts.rocks/v3.7/php-7.2" >> /etc/apk/repositories
+
+# install modules : GD iconv
+RUN apk update && apk add -U \
+    openssl \
+    curl \
+    wget \
+    zip \
+    unzip \
+    git
+
+RUN apk add -U \
+    tini \
+    php7@cast \
+    php7-dev@cast \
+    php7-pear@cast \
+    php7-common@cast \
+    php7-apcu@cast \
+    php7-bcmath@cast \
+    php7-ctype@cast \
+    php7-curl@cast \
+    php7-exif@cast \
+    php7-iconv@cast \
+    php7-intl@cast \
+    php7-json@cast \
+    php7-mbstring@cast \
+    php7-opcache@cast \
+    php7-openssl@cast \
+    php7-pcntl@cast \
+    php7-pdo@cast \
+    php7-mysqlnd@cast \
+    php7-pdo_mysql@cast \
+    php7-pdo_pgsql@cast \
+    php7-phar@cast \
+    php7-posix@cast \
+    php7-session@cast \
+    php7-xml@cast \
+    php7-xsl@cast \
+    php7-zip@cast \
+    php7-zlib@cast \
+    php7-dom@cast \
+    php7-redis@cast \
+    php7-fpm@cast \
+    php7-gd@cast \
+    php7-mcrypt@cast \
+    php7-gmp@cast \
+    php7-mysqli@cast \
+    php7-pgsql@cast \
+    php7-gettext@cast \
+    php7-bz2@cast \
+    curl curl-dev postgresql-dev \
+    hiredis-dev libmcrypt-dev gmp-dev icu-dev linux-headers musl --virtual .phpize-deps $PHPIZE_DEPS \
+    tzdata && \
+    rm -rf /var/cache/apk/*
+
+RUN apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS linux-headers && \
+    pecl install swoole && \
+    docker-php-ext-enable swoole && \
+    apk del .phpize-deps
+
+ADD rootfs /
+
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["/usr/sbin/php-fpm7", "-R", "--nodaemonize"]
+
+EXPOSE 9000
+
+WORKDIR /app

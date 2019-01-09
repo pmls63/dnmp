@@ -1,5 +1,5 @@
 FROM alpine:3.7
-
+# https://github.com/nginxinc/docker-nginx
 MAINTAINER pmls63 <1083239138@qq.com>
 
 ENV NGINX_VERSION 1.13.12

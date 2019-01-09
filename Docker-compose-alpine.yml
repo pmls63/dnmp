@@ -29,40 +29,33 @@ services:                                                   # 服务
             context: ./build/php/php72/                     # 指定Dockerfile所在文件夹的路径
         image: php72:php-fpm-7.2.4-alpine-3.7               # 当有build及image时，Compose会构建镜像并命名为images后面的名字 webapp:tag
         expose:
-            - "9000"
-   # 将当前容器（php72）的9000端口暴露给link到本容器(php72)的容器
-        ports:
-            - "9501:9501"
+            - "9000"                                        # 将当前容器（php72）的9000端口暴露给link到本容器(php72)的容器
         restart: always
         volumes:
             - ./www/:/var/www/html/:rw
-            - ./conf/php/php.ini:/etc/php7/php.ini:ro
+            - ./conf/php/php.ini:/usr/local/etc/php/php.ini:ro
             - ./conf/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
             - ./log/php-fpm/:/var/log/php-fpm/:rw
-            # - ./conf/php/http-server.php:/http-server.php
         links:
             - mysql:mysql
             - redis:redis
             - mongodb:mongodb
         networks:
             - w-network
-        # command: php /http-server.php start
 
 # MYSQL_ROOT_PASSWORD
 # MYSQL_DATABASE
-# MYSQL_USER MYSQL_PASSWORD
-# MYSQL_ALLOW_EMPTY_PASSWORD
-# MYSQL_RANDOM_ROOT_PASSWORD
+# MYSQL_USER
+# MYSQL_PASSWORD
 # /etc/mysql/my.cnf
 # /etc/mysql/conf.d/
 # /var/lib/mysql
     mysql:
-        # build:
-        #     context: ./build/php/php72/
-        # image: mariadb:mariadb-10.1.28-alpine-3.7
-        image: mariadb:latest
+        build:
+            context: ./build/mariadb/
+        image: mariadb:mariadb-10.1.28-alpine-3.7
         ports:
-            - "3307:3306"
+            - "3306:3306"
         expose:
             - "3306"
         restart: always
