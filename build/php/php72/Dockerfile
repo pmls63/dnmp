@@ -72,11 +72,11 @@ RUN apk add -U \
     ln -fs /usr/bin/php7 /usr/bin/php && \
     rm -rf /var/cache/apk/ && mkdir /var/cache/apk && rm -rf /tmp/*
 
-ADD swoole /root/swoole-src/
+# ADD swoole /root/swoole-src/
 
-ADD build_swoole_so.sh /root/
+# ADD build_swoole_so.sh /root/
 
-RUN sh /root/build_swoole_so.sh
+# RUN sh /root/build_swoole_so.sh
 
 ADD rootfs /
 
