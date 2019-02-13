@@ -17,6 +17,8 @@ RUN apk --update add ca-certificates \
 # install modules : GD iconv
 RUN apk update && apk add -U \
     openssl \
+    libxml2 \
+    libxml2-dev \
     curl \
     wget \
     zip \
@@ -50,6 +52,8 @@ RUN apk add -U \
     php7-posix \
     php7-session \
     php7-xml \
+    php7-xmlwriter \
+    php7-xmlreader \
     php7-xsl \
     php7-zip \
     php7-zlib \
