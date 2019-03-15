@@ -81,6 +81,12 @@ RUN apk add -U \
 # ADD build_swoole_so.sh /root/
 
 # RUN sh /root/build_swoole_so.sh
+# 添加composer
+RUN php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"\
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    &&  mv composer.phar /usr/local/bin/composer \
+    && composer config -g repo.packagist composer https://packagist.laravel-china.org
 
 ADD rootfs /
 
