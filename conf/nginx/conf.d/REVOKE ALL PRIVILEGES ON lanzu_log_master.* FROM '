@@ -1,0 +1,44 @@
+
+REVOKE ALL PRIVILEGES ON intelligent_master.* FROM 'yangnan'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_dev.* FROM 'yangnan'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_common.* FROM 'yangnan'@'%';
+GRANT SELECT ON intelligent_master.* TO 'yangnan'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_dev.* TO 'yangnan'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_common.* TO 'yangnan'@'%';
+
+REVOKE ALL PRIVILEGES ON intelligent_master.* FROM 'zhaoyuan'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_dev.* FROM 'zhaoyuan'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_common.* FROM 'zhaoyuan'@'%';
+GRANT SELECT ON intelligent_master.* TO 'zhaoyuan'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_dev.* TO 'zhaoyuan'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_common.* TO 'zhaoyuan'@'%';
+
+REVOKE ALL PRIVILEGES ON intelligent_master.* FROM 'yangli'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_dev.* FROM 'yangli'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_common.* FROM 'yangli'@'%';
+GRANT SELECT ON intelligent_master.* TO 'yangli'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_dev.* TO 'yangli'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_common.* TO 'yangli'@'%';
+
+REVOKE ALL PRIVILEGES ON intelligent_master.* FROM 'chenshandan'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_dev.* FROM 'chenshandan'@'%';
+REVOKE ALL PRIVILEGES ON intelligent_common.* FROM 'chenshandan'@'%';
+GRANT SELECT ON intelligent_master.* TO 'chenshandan'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_dev.* TO 'chenshandan'@'%';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_common.* TO 'chenshandan'@'%';
+
+REVOKE ALL PRIVILEGES ON intelligent_master.* FROM 'lanzu_common'@'127.0.0.1';
+REVOKE ALL PRIVILEGES ON intelligent_dev.* FROM 'lanzu_common'@'127.0.0.1';
+REVOKE ALL PRIVILEGES ON intelligent_common.* FROM 'lanzu_common'@'127.0.0.1';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_common.* TO 'lanzu_common'@'127.0.0.1';
+
+REVOKE ALL PRIVILEGES ON lanzu_log_dev.* FROM 'lanzu_dev'@'127.0.0.1';
+REVOKE ALL PRIVILEGES ON lanzu_log_dev.* FROM 'lanzu_dev'@'127.0.0.1';
+REVOKE ALL PRIVILEGES ON lanzu_log_dev.* FROM 'lanzu_dev'@'127.0.0.1';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON lanzu_log_dev.* TO 'lanzu_dev'@'127.0.0.1';
+
+REVOKE ALL PRIVILEGES ON intelligent_master.* FROM 'lanzu_master'@'127.0.0.1';
+REVOKE ALL PRIVILEGES ON intelligent_dev.* FROM 'lanzu_master'@'127.0.0.1';
+REVOKE ALL PRIVILEGES ON intelligent_common.* FROM 'lanzu_master'@'127.0.0.1';
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON intelligent_master.* TO 'lanzu_master'@'127.0.0.1';
+

@@ -1,5 +1,5 @@
 # @author pmls63 1083239138@qq.com
-version: "2.0"                                              # 指定版本号
+version: "2.0"                                                # 指定版本号
 services:                                                   # 服务
 # /etc/nginx/nginx.conf
 # /etc/nginx/conf.d/
@@ -7,11 +7,14 @@ services:                                                   # 服务
         build:
             context: ./build/nginx/
         image: nginx:nginx-1.13.12-alpine-3.7-perl
+        container_name: nginx
         ports:                                              # [HOST:CONTAINER]
-            - "80:80"                                       # 绑定容器的80端口（R右边的80表示容器的端口号）到主机的80端口[HOST:CONTAINER]
-            - "443:443"
+            - 80:80                                         # 绑定容器的80端口（R右边的80表示容器的端口号）到主机的80端口[HOST:CONTAINER]
+            - 443:443
         restart: always
         volumes:                                            # 挂载一个目录或一个已存在的数据卷容器 [HOST:CONTAINER:ro/rw]
+            - /Users/w/Work/Projects/xiaozhu/Git/:/lzgit/:rw       # 揽租 git项目目录
+            # - /Users/w/Work/Projects/www_docker/:/www_docker/:rw   # 本地www目录
             - ./www/:/var/www/html/:rw
             - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
             - ./conf/nginx/conf.d:/etc/nginx/conf.d/:ro
@@ -28,25 +31,25 @@ services:                                                   # 服务
         build:                                              # 使用Dockerfile构建镜像
             context: ./build/php/php72/                     # 指定Dockerfile所在文件夹的路径
         image: php72:php-fpm-7.2.4-alpine-3.7               # 当有build及image时，Compose会构建镜像并命名为images后面的名字 webapp:tag
+        container_name: php72
         expose:
-            - "9000"
+            - 9000
    # 将当前容器（php72）的9000端口暴露给link到本容器(php72)的容器
         ports:
-            - "9501:9501"
+            - 9501:9501
         restart: always
         volumes:
+            - /Users/w/Work/Projects/xiaozhu/Git/:/lzgit/:rw         # 揽租 git项目目录
             - ./www/:/var/www/html/:rw
             - ./conf/php/php.ini:/etc/php7/php.ini:ro
             - ./conf/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
             - ./log/php-fpm/:/var/log/php-fpm/:rw
-            # - ./conf/php/http-server.php:/http-server.php
         links:
             - mysql:mysql
             - redis:redis
-            - mongodb:mongodb
+            - mongo:mongo
         networks:
             - w-network
-        # command: php /http-server.php start
 
 # MYSQL_ROOT_PASSWORD
 # MYSQL_DATABASE
@@ -57,14 +60,12 @@ services:                                                   # 服务
 # /etc/mysql/conf.d/
 # /var/lib/mysql
     mysql:
-        # build:
-        #     context: ./build/php/php72/
-        # image: mariadb:mariadb-10.1.28-alpine-3.7
         image: mariadb:latest
+        container_name: mysql
         ports:
-            - "3307:3306"
+            - 3307:3306
         expose:
-            - "3306"
+            - 3306
         restart: always
         volumes:
             - ./conf/mysql/my.cnf:/etc/mysql/my.conf:ro
@@ -76,14 +77,29 @@ services:                                                   # 服务
         networks:
             - w-network
 
+    mysql-admin:
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: mysql-admin
+        ports:
+            - 8080:80
+        restart: always
+        environment:
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+            PMA_HOST: mysql
+        networks:
+            - w-network
+
 # /usr/local/etc/redis/redis.conf
 # /data/
     redis:
         build:
             context: ./build/redis/
         image: redis:redis-4.0.9-alpine-3.7
+        container_name: redis
         ports:
-            - "6379:6379"
+            - 6379:6379
         restart: always
         volumes:
             - ./conf/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
@@ -92,19 +108,54 @@ services:                                                   # 服务
         networks:
             - w-network
 
+    redis-admin:
+        image: erikdubbelboer/phpredisadmin:latest
+        container_name: redis-admin
+        depends_on:
+            - redis
+        ports:
+            - 8082:80
+        restart: always
+        environment:
+            REDIS_1_HOST: redis
+            REDIS_1_NAME: redis
+        networks:
+            - w-network
+
 # MONGO_INITDB_ROOT_USERNAME
 # MONGO_INITDB_ROOT_PASSWORD
 # MONGO_INITDB_DATABASE
 # /data/db/
-    mongodb:
+    mongo:
         image: mongo:latest
+        container_name: mongo
         ports:
-            - "27017:27017"
+            - 27017:27017
         restart: always
         volumes:
-            - ./conf/mongodb/mongodb.conf:/etc/mongodb/mongodb.conf:ro
+            - ./conf/mongodb/mongod.conf.orig:/etc/mongod.conf.orig:ro
             - ./db/mongodb/:/data/db/:rw
             - ./log/mongodb/:/var/log/mongodb/:rw
+#        environment:
+#            MONGO_INITDB_ROOT_USERNAME: mongoadmin
+#            MONGO_INITDB_ROOT_PASSWORDls: mongoadmin
+        networks:
+            - w-network
+
+    mongo-express:
+        image: mongo-express:latest
+        container_name: mongo-express
+        links:
+            - mongo
+        restart: always
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_OPTIONS_EDITORTHEME: 3024-night
+            ME_CONFIG_BASICAUTH_USERNAME: mongoexpress
+            ME_CONFIG_BASICAUTH_PASSWORD: mongoexpress
+#            ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+#            ME_CONFIG_MONGODB_ADMINPASSWORD: mongoadmin
         networks:
             - w-network
 
